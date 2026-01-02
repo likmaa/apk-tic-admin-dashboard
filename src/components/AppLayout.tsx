@@ -3,7 +3,7 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import {
   LayoutDashboard, Users, UserCheck, Car, DollarSign, Bell,
-  ShieldCheck, Code, LogOut, Menu, X
+  ShieldCheck, Code, LogOut, Menu, X, Navigation
 } from 'lucide-react';
 
 import Img from '@/assets/LOGO_OR.png';
@@ -14,10 +14,9 @@ function NavItem({ to, label, icon, onClick }: { to: string; label: string; icon
       to={to}
       onClick={onClick} // Pour fermer le menu en naviguant sur mobile
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-          isActive
-            ? 'bg-primary text-white shadow-sm'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+        `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
+          ? 'bg-primary text-white shadow-sm'
+          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
         }`
       }
     >
@@ -41,6 +40,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const adminMenu = [
     { to: '/overview', label: "Vue d'ensemble", icon: <LayoutDashboard size={18} /> },
+    { to: '/rides/active', label: 'Courses actives', icon: <Navigation size={18} /> },
     { to: '/drivers/pending', label: 'Chauffeurs en attente', icon: <UserCheck size={18} /> },
     { to: '/drivers/online', label: 'Statut chauffeurs', icon: <UserCheck size={18} /> },
     { to: '/drivers/stats', label: 'Statistiques chauffeurs', icon: <UserCheck size={18} /> },
@@ -76,7 +76,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <img src={Img} alt="Logo" className="h-8 w-auto" />
           </Link>
         </div>
-        
+
         {/* Navigation */}
         <div className="flex-1 flex flex-col overflow-y-auto">
           <nav className="p-3 flex-1"><div className="space-y-2">{renderNavItems()}</div></nav>
@@ -93,15 +93,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* --- Barre latérale pour petits écrans (Mobile) --- */}
       {/* Apparaît en superposition quand isSidebarOpen est true */}
       <div
-        className={`fixed inset-0 z-30 bg-black/30 transition-opacity duration-300 lg:hidden ${
-          isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 z-30 bg-black/30 transition-opacity duration-300 lg:hidden ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
         onClick={() => setSidebarOpen(false)}
       ></div>
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white flex flex-col transition-transform duration-300 ease-in-out lg:hidden ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white flex flex-col transition-transform duration-300 ease-in-out lg:hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         {/* Logo et bouton de fermeture */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
@@ -134,7 +132,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-600 hover:text-primary">
             <Menu size={24} />
           </button>
-          
+
           {/* Titre de la page (ou un espace vide pour l'alignement) */}
           <div className="flex-1 text-center lg:text-left">
             <h1 className="text-xl font-semibold text-gray-800">
@@ -149,7 +147,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="text-sm font-medium text-gray-700 hidden sm:block">{user?.name}</span>
           </div>
         </header>
-        
+
         <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
           {children}
         </main>

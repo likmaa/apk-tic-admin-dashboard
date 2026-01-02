@@ -255,13 +255,22 @@ export default function OnlineDriversPage() {
           phone: row.phone,
           email: row.email ?? null,
           is_online: !!row.is_online,
-          last_lat: row.last_lat ?? null,
-          last_lng: row.last_lng ?? null,
+          last_lat: row.last_lat != null ? Number(row.last_lat) : null,
+          last_lng: row.last_lng != null ? Number(row.last_lng) : null,
           last_location_at: row.last_location_at ?? null,
           status: row.status ?? null,
           vehicle_number: row.vehicle_number ?? null,
           license_number: row.license_number ?? null,
-          documents: row.documents ? JSON.parse(row.documents) : null,
+          documents: (() => {
+            if (!row.documents) return null;
+            if (typeof row.documents === 'object') return row.documents;
+            try {
+              return JSON.parse(row.documents);
+            } catch (e) {
+              console.error("Failed to parse documents for driver", row.id, e);
+              return null;
+            }
+          })(),
         }));
         setDrivers(mapped);
       } catch (e: any) {
@@ -276,7 +285,12 @@ export default function OnlineDriversPage() {
   const handleViewLocation = async (id: number) => {
     try {
       const res = await api.get(`/api/admin/drivers/${id}/location`);
-      setSelectedLocation(res.data as LocationInfo);
+      const data = res.data;
+      setSelectedLocation({
+        ...data,
+        last_lat: data.last_lat != null ? Number(data.last_lat) : null,
+        last_lng: data.last_lng != null ? Number(data.last_lng) : null,
+      } as LocationInfo);
     } catch (e: any) {
       alert(e?.response?.data?.message || "Impossible de récupérer la localisation du chauffeur");
     }
@@ -395,7 +409,7 @@ export default function OnlineDriversPage() {
                       <div className="text-xs text-gray-500">Permis : {driver.license_number || '—'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {driver.last_lat && driver.last_lng ? (
+                      {driver.last_lat != null && driver.last_lng != null ? (
                         <>
                           <div>{driver.last_lat.toFixed(5)}, {driver.last_lng.toFixed(5)}</div>
                           {driver.last_location_at && (

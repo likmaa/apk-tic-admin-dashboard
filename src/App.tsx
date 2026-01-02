@@ -16,6 +16,7 @@ import AppLayout from '@/components/AppLayout'
 import UsersManagementPage from '@/pages/UsersManagementPage'
 import OnlineDriversPage from '@/pages/OnlineDriversPage'
 import DriversStatsPage from '@/pages/DriversStatsPage'
+import ActiveRidesPage from '@/pages/ActiveRidesPage'
 
 function LoadingScreen() {
   return (
@@ -146,6 +147,16 @@ export default function App() {
           <PrivateRoute roles={["admin"]}>
             <AppLayout>
               <DriversStatsPage />
+            </AppLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/rides/active"
+        element={
+          <PrivateRoute roles={["admin"]}>
+            <AppLayout>
+              <ActiveRidesPage />
             </AppLayout>
           </PrivateRoute>
         }

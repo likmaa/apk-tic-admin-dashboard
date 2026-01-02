@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '@/api/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Mail, Phone, Lock, LogIn } from 'lucide-react'; // Icônes pour une meilleure UI
+import { Mail, Phone, Lock, LogIn, Eye, EyeOff } from 'lucide-react'; // Icônes pour une meilleure UI
 
 // ⚡ Si lucide-react n’est pas installé :
 // npm install lucide-react
@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [loginMethod, setLoginMethod] = useState<'email' | 'phone'>('email');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   // 🔧 Gestion du formulaire
   const onSubmit = async (e: React.FormEvent) => {
@@ -74,18 +75,16 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => { setLoginMethod('email'); setIdentifier(''); }}
-            className={`w-1/2 py-2 text-sm font-medium rounded-md transition-colors ${
-              loginMethod === 'email' ? 'bg-white shadow text-primary' : 'text-gray-600 hover:bg-gray-200'
-            }`}
+            className={`w-1/2 py-2 text-sm font-medium rounded-md transition-colors ${loginMethod === 'email' ? 'bg-white shadow text-primary' : 'text-gray-600 hover:bg-gray-200'
+              }`}
           >
             Email
           </button>
           <button
             type="button"
             onClick={() => { setLoginMethod('phone'); setIdentifier(''); }}
-            className={`w-1/2 py-2 text-sm font-medium rounded-md transition-colors ${
-              loginMethod === 'phone' ? 'bg-white shadow text-primary' : 'text-gray-600 hover:bg-gray-200'
-            }`}
+            className={`w-1/2 py-2 text-sm font-medium rounded-md transition-colors ${loginMethod === 'phone' ? 'bg-white shadow text-primary' : 'text-gray-600 hover:bg-gray-200'
+              }`}
           >
             Téléphone
           </button>
@@ -111,21 +110,29 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
+          <div className="relative">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Mot de passe
             </label>
             <InputField
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                console.log('Password changed:', e.target.value);
                 setPassword(e.target.value);
               }}
               required
               icon={<Lock size={18} />}
             />
+            {/* Oeil pour afficher/masquer le mot de passe */}
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-9 text-gray-400 hover:text-primary transition-colors focus:outline-none"
+              title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           {/* ⚠️ Message d’erreur */}

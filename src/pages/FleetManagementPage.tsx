@@ -28,7 +28,7 @@ const FleetStatusBadge = ({ status }: { status: DriverStatus }) => {
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full ${config.style}`}>
       {config.icon}
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {status === 'active' ? 'Actif' : status === 'suspended' ? 'Suspendu' : status === 'pending' ? 'En attente' : status}
     </span>
   );
 };
@@ -157,7 +157,7 @@ export default function FleetManagementPage() {
                 <tr key={driver.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <img className="h-10 w-10 rounded-full" src={`https://ui-avatars.com/api/?name=${driver.name.replace(' ', '+' )}&background=random`} alt="" />
+                      <img className="h-10 w-10 rounded-full" src={`https://ui-avatars.com/api/?name=${driver.name.replace(' ', '+')}&background=random`} alt="" />
                       <div>
                         <div className="text-sm font-medium text-gray-900">{driver.name}</div>
                         <div className="text-sm text-gray-500">{driver.email}</div>
@@ -185,11 +185,11 @@ export default function FleetManagementPage() {
           </table>
         </div>
         {filteredData.length === 0 && (
-            <div className="text-center p-10">
-                <User size={48} className="mx-auto text-gray-400" />
-                <h3 className="mt-4 text-lg font-semibold text-gray-800">Aucun chauffeur trouvé</h3>
-                <p className="mt-1 text-sm text-gray-500">Essayez d'ajuster votre recherche ou vos filtres.</p>
-            </div>
+          <div className="text-center p-10">
+            <User size={48} className="mx-auto text-gray-400" />
+            <h3 className="mt-4 text-lg font-semibold text-gray-800">Aucun chauffeur trouvé</h3>
+            <p className="mt-1 text-sm text-gray-500">Essayez d'ajuster votre recherche ou vos filtres.</p>
+          </div>
         )}
       </div>
     </div>
