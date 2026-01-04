@@ -32,12 +32,19 @@ export default function LoginPage() {
         password,
       };
 
+      console.log('Sending login request:', { url: '/api/admin/login', payload });
       const res = await api.post('/api/admin/login', payload);
+      console.log('Login response:', res.data);
 
       // Authentification réussie
       login(res.data.token, res.data.user);
       navigate('/'); // Redirection vers la page principale après succès
     } catch (err: any) {
+      console.error('Login error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
       // 🧩 Correction : ton erreur était dans le bloc try sans catch
       setError(err?.response?.data?.message || 'La connexion a échoué. Veuillez vérifier vos identifiants.');
     } finally {

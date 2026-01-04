@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api } from '@/api/client'
+import { useAuth } from '@/hooks/useAuth'
 
 type User = {
   id: number
@@ -24,8 +25,15 @@ export default function UsersManagementPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [paged, setPaged] = useState<Paged<User>>({ data: [], current_page: 1, per_page: 20, total: 0 })
+  const { user: currentUser } = useAuth()
 
-  const roles = useMemo(() => ['admin','developer','driver','passenger'], [])
+  const roles = useMemo(() => ['admin', 'developer', 'driver', 'passenger'], [])
+
+  // Filter available roles for the select options
+  const availableRoles = useMemo(() => {
+    if (currentUser?.role === 'developer') return roles
+    return roles.filter(r => r !== 'developer')
+  }, [currentUser, roles])
 
   const fetchUsers = async () => {
     setLoading(true)
@@ -139,11 +147,17 @@ export default function UsersManagementPage() {
                   <select
                     value={u.role}
                     onChange={(e) => updateRole(u, e.target.value as User['role'])}
-                    className="px-2 py-1 border rounded-md"
+                    className="px-2 py-1 border rounded-md disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    disabled={u.role === 'developer' && currentUser?.role !== 'developer'}
+                    title={u.role === 'developer' && currentUser?.role !== 'developer' ? "Seul un développeur peut modifier un compte développeur" : ""}
                   >
-                    {roles.map((r) => (
+                    {availableRoles.map((r) => (
                       <option key={r} value={r}>{r}</option>
                     ))}
+                    {/* Ensure current role is visible even if not in availableRoles (for dev accounts viewed by admins) */}
+                    {!availableRoles.includes(u.role) && (
+                      <option value={u.role}>{u.role}</option>
+                    )}
                   </select>
                 </td>
                 <td className="px-4 py-2">

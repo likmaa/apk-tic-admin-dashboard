@@ -1,7 +1,13 @@
 import axios from 'axios'
 
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL
+  const host = typeof window !== 'undefined' ? window.location.hostname : '127.0.0.1'
+  return `http://${host}:8000`
+}
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000',
+  baseURL: getBaseURL(),
 })
 
 api.interceptors.request.use((config) => {

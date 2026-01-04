@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '@/api/client';
 import { Car, MapPin, Navigation, Clock, XCircle, RefreshCw, User, Phone } from 'lucide-react';
+import { getPusher } from '@/api/pusher';
 
 interface Ride {
     id: number;
@@ -19,6 +20,10 @@ interface Ride {
         name: string;
         phone: string;
     } | null;
+    passenger_name?: string | null;
+    passenger_phone?: string | null;
+    vehicle_type?: 'standard' | 'vip';
+    has_baggage?: boolean;
 }
 
 export default function ActiveRidesPage() {
@@ -29,18 +34,26 @@ export default function ActiveRidesPage() {
     const fetchRides = async () => {
         try {
             setLoading(true);
-            // Fetch rides for each active status
+            const t = Date.now();
             const [requested, accepted, ongoing] = await Promise.all([
-                api.get('/api/admin/rides?status=requested'),
-                api.get('/api/admin/rides?status=accepted'),
-                api.get('/api/admin/rides?status=ongoing'),
+                api.get(`/api/admin/rides?status=requested&t=${t}`),
+                api.get(`/api/admin/rides?status=accepted&t=${t}`),
+                api.get(`/api/admin/rides?status=ongoing&t=${t}`),
             ]);
 
-            const allActive = [
+            const combined = [
                 ...(requested.data.data || []),
                 ...(accepted.data.data || []),
                 ...(ongoing.data.data || []),
-            ].sort((a, b) => b.id - a.id);
+            ];
+
+            // Deduplicate by ID to avoid ghost rides during status transitions
+            const seen = new Set();
+            const allActive = combined.filter(ride => {
+                if (seen.has(ride.id)) return false;
+                seen.add(ride.id);
+                return true;
+            }).sort((a, b) => b.id - a.id);
 
             setRides(allActive);
         } catch (error) {
@@ -52,8 +65,21 @@ export default function ActiveRidesPage() {
 
     useEffect(() => {
         fetchRides();
-        const interval = setInterval(fetchRides, 30000); // Auto-refresh every 30s
-        return () => clearInterval(interval);
+        const interval = setInterval(fetchRides, 15000); // Polling 15s fallback
+
+        const pusher = getPusher();
+        const channel = pusher.subscribe('private-admin.alerts');
+
+        channel.bind('ride.cancelled', (data: { rideId: number }) => {
+            console.log('Real-time cancellation received:', data);
+            setRides(prev => prev.filter(r => r.id !== data.rideId));
+        });
+
+        return () => {
+            clearInterval(interval);
+            channel.unbind_all();
+            pusher.unsubscribe('private-admin.alerts');
+        };
     }, []);
 
     const handleCancel = async (rideId: number) => {
@@ -116,6 +142,16 @@ export default function ActiveRidesPage() {
 
                             <div className="p-4 space-y-4 flex-1">
                                 <div className="space-y-3">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ride.vehicle_type === 'vip' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
+                                            {ride.vehicle_type === 'vip' ? 'VIP (AC)' : 'Standard'}
+                                        </span>
+                                        {ride.has_baggage && (
+                                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-orange-100 text-orange-700">
+                                                Bagages
+                                            </span>
+                                        )}
+                                    </div>
                                     <div className="flex items-start gap-3">
                                         <MapPin size={16} className="text-green-500 mt-1 flex-shrink-0" />
                                         <div>
@@ -137,10 +173,10 @@ export default function ActiveRidesPage() {
                                         <p className="text-xs text-gray-500 font-medium flex items-center gap-1">
                                             <User size={12} /> Passager
                                         </p>
-                                        <p className="text-sm font-semibold truncate">{ride.passenger?.name || 'Inconnu'}</p>
-                                        {ride.passenger?.phone && (
+                                        <p className="text-sm font-semibold truncate">{ride.passenger_name || ride.passenger?.name || 'Inconnu'}</p>
+                                        {(ride.passenger_phone || ride.passenger?.phone) && (
                                             <p className="text-[10px] text-gray-500 flex items-center gap-1">
-                                                <Phone size={10} /> {ride.passenger.phone}
+                                                <Phone size={10} /> {ride.passenger_phone || ride.passenger?.phone}
                                             </p>
                                         )}
                                     </div>
