@@ -54,7 +54,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   ];
 
   const developerMenu = [
-    { to: '/drivers/pending', label: 'Chauffeurs en attente', icon: <UserCheck size={18} /> },
+    ...adminMenu,
     { to: '/dev/tools', label: 'Outils développeur', icon: <Code size={18} /> },
   ];
 

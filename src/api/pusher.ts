@@ -1,7 +1,7 @@
 import Pusher from 'pusher-js';
 
 const PUSHER_KEY = import.meta.env.VITE_PUSHER_KEY || 'local-key';
-const WS_HOST = import.meta.env.VITE_PUSHER_HOST || '192.168.1.70';
+const WS_HOST = import.meta.env.VITE_PUSHER_HOST || '192.168.1.80';
 const WS_PORT = Number(import.meta.env.VITE_PUSHER_PORT || '6001');
 const FORCE_TLS = import.meta.env.VITE_PUSHER_TLS === 'true';
 
@@ -19,7 +19,7 @@ export const getPusher = () => {
         disableStats: true,
         enabledTransports: ['ws', 'wss'],
         cluster: 'mt1',
-        authEndpoint: `${import.meta.env.VITE_API_BASE_URL || 'http://192.168.1.70:8000'}/broadcasting/auth`,
+        authEndpoint: `${import.meta.env.VITE_API_BASE_URL || 'http://192.168.1.80:8000'}/broadcasting/auth`,
         auth: {
             headers: {
                 Authorization: `Bearer ${token}`,
