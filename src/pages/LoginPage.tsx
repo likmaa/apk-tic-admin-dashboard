@@ -4,8 +4,26 @@ import { api } from '@/api/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Mail, Phone, Lock, LogIn, Eye, EyeOff } from 'lucide-react'; // Icônes pour une meilleure UI
 
-// ⚡ Si lucide-react n’est pas installé :
+// ⚡ Si lucide-react n'est pas installé :
 // npm install lucide-react
+
+// 🧱 Composant réutilisable pour les champs - DÉPLACÉ HORS DU COMPOSANT PRINCIPAL
+const InputField = React.forwardRef<HTMLInputElement, {
+  icon: React.ReactNode;
+} & React.InputHTMLAttributes<HTMLInputElement>>(({ icon, className = '', ...props }, ref) => (
+  <div className="relative flex items-center">
+    <div className="absolute left-0 inset-y-0 flex items-center pl-3">
+      {icon}
+    </div>
+    <input
+      ref={ref}
+      className={`w-full border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm text-gray-700 focus:ring-2 focus:ring-primary focus:outline-none ${className}`}
+      {...props}
+    />
+  </div>
+));
+
+InputField.displayName = 'InputField';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -52,21 +70,6 @@ export default function LoginPage() {
     }
   };
 
-  // 🧱 Composant réutilisable pour les champs
-  const InputField = React.forwardRef<HTMLInputElement, {
-    icon: React.ReactNode;
-  } & React.InputHTMLAttributes<HTMLInputElement>>(({ icon, className = '', ...props }, ref) => (
-    <div className="relative flex items-center">
-      <div className="absolute left-0 inset-y-0 flex items-center pl-3">
-        {icon}
-      </div>
-      <input
-        ref={ref}
-        className={`w-full border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm text-gray-700 focus:ring-2 focus:ring-primary focus:outline-none ${className}`}
-        {...props}
-      />
-    </div>
-  ));
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
