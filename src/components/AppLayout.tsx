@@ -3,7 +3,7 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import {
   LayoutDashboard, Users, UserCheck, Car, DollarSign, Bell,
-  ShieldCheck, Code, LogOut, Menu, X, Navigation
+  ShieldCheck, Code, LogOut, Menu, X, Navigation, PieChart
 } from 'lucide-react';
 
 import Img from '@/assets/LOGO_OR.png';
@@ -55,6 +55,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const developerMenu = [
     ...adminMenu,
+    { to: '/dev/commission', label: 'Commissions', icon: <PieChart size={18} /> },
     { to: '/dev/tools', label: 'Outils développeur', icon: <Code size={18} /> },
   ];
 

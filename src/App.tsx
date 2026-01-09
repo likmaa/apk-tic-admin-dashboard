@@ -5,6 +5,7 @@ import PendingDriversPage from '@/pages/PendingDriversPage'
 import { useAuth } from '@/hooks/useAuth'
 import DashboardOverview from '@/pages/DashboardOverview'
 import PricingConfigPage from '@/pages/PricingConfigPage'
+import CommissionSettingsPage from '@/pages/CommissionSettingsPage'
 import FinancePage from '@/pages/FinancePage'
 import FleetManagementPage from '@/pages/FleetManagementPage'
 import PassengersDBPage from '@/pages/PassengersDBPage'
@@ -176,6 +177,16 @@ export default function App() {
           <PrivateRoute roles={["admin", "developer"]}>
             <AppLayout>
               <AccountsModerationPage />
+            </AppLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dev/commission"
+        element={
+          <PrivateRoute roles={["developer"]}>
+            <AppLayout>
+              <CommissionSettingsPage />
             </AppLayout>
           </PrivateRoute>
         }
