@@ -23,6 +23,8 @@ interface PricingConfig {
     start_time: string;
     end_time: string;
   };
+  pickup_grace_period_m: number;
+  pickup_waiting_rate_per_min: number;
 }
 
 // Props typées pour le composant PricingInput
@@ -87,6 +89,8 @@ export default function PricingConfigPage() {
             start_time: data.night?.start_time ?? '22:00',
             end_time: data.night?.end_time ?? '06:00',
           },
+          pickup_grace_period_m: Number(data.pickup_grace_period_m ?? 5),
+          pickup_waiting_rate_per_min: Number(data.pickup_waiting_rate_per_min ?? 10),
         });
       } catch (e: any) {
         setError(e?.response?.data?.message || "Erreur de chargement de la configuration tarifaire");
@@ -188,8 +192,31 @@ export default function PricingConfigPage() {
                 unit="FCFA/min"
                 value={config.stop_rate_per_min}
                 onChange={e => setConfig({ ...config, stop_rate_per_min: parseFloat(e.target.value) })}
-                description="Facturé uniquement quand le chauffeur active le bouton 'Arrêt' (50F / 10 min)."
+                description="Facturé uniquement quand le chauffeur active le bouton 'Arrêt'."
               />
+            </div>
+
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+              <div className="flex items-center gap-3">
+                <Clock className="text-blue-600" size={24} />
+                <h2 className="text-lg font-semibold text-gray-900">Attente à la Prise en Charge</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <PricingInput
+                  label="Délai de grâce"
+                  unit="min"
+                  value={config.pickup_grace_period_m}
+                  onChange={e => setConfig({ ...config, pickup_grace_period_m: parseInt(e.target.value) })}
+                  description="Nb de minutes gratuites après l'arrivée."
+                />
+                <PricingInput
+                  label="Tarif attente"
+                  unit="F/min"
+                  value={config.pickup_waiting_rate_per_min}
+                  onChange={e => setConfig({ ...config, pickup_waiting_rate_per_min: parseInt(e.target.value) })}
+                  description="Chaque minute supplémentaire."
+                />
+              </div>
             </div>
           </div>
 

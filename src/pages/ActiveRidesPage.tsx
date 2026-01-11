@@ -35,15 +35,19 @@ export default function ActiveRidesPage() {
         try {
             setLoading(true);
             const t = Date.now();
-            const [requested, accepted, ongoing] = await Promise.all([
+            const [requested, accepted, arrived, pickup, ongoing] = await Promise.all([
                 api.get(`/api/admin/rides?status=requested&t=${t}`),
                 api.get(`/api/admin/rides?status=accepted&t=${t}`),
+                api.get(`/api/admin/rides?status=arrived&t=${t}`),
+                api.get(`/api/admin/rides?status=pickup&t=${t}`),
                 api.get(`/api/admin/rides?status=ongoing&t=${t}`),
             ]);
 
             const combined = [
                 ...(requested.data.data || []),
                 ...(accepted.data.data || []),
+                ...(arrived.data.data || []),
+                ...(pickup.data.data || []),
                 ...(ongoing.data.data || []),
             ];
 
@@ -99,6 +103,8 @@ export default function ActiveRidesPage() {
     const statusMap = {
         requested: { label: 'En attente', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
         accepted: { label: 'Acceptée', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+        pickup: { label: 'Récupération', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
+        arrived: { label: 'Arrivé', color: 'bg-cyan-100 text-cyan-800 border-cyan-200' },
         ongoing: { label: 'En cours', color: 'bg-green-100 text-green-800 border-green-200' },
     };
 
