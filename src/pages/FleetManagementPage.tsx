@@ -62,15 +62,17 @@ export default function FleetManagementPage() {
             status = 'suspended';
           }
 
+          const profile = u.driver_profile;
+
           return {
             id: u.id,
             name: u.name ?? '',
             phone: u.phone ?? '',
             email: u.email ?? '',
             status,
-            vehicle_model: 'N/A',
-            vehicle_number: u.vehicle_number ?? '',
-            rating: null,
+            vehicle_model: profile?.vehicle_model ? `${profile.vehicle_make || ''} ${profile.vehicle_model}`.trim() : (u.vehicle_number ? 'Véhicule enregistré' : 'N/A'),
+            vehicle_number: profile?.vehicle_number || u.vehicle_number || 'N/A',
+            rating: u.ratings_avg_stars ? Number(u.ratings_avg_stars) : null,
             join_date: u.created_at ?? new Date().toISOString(),
           };
         });

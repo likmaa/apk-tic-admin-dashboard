@@ -4,18 +4,7 @@ import type { LucideIcon } from 'lucide-react';
 import { api } from '@/api/client';
 
 // --- Données Statiques pour les Finances (seed local, remplacées ensuite par l'API) ---
-const initialTransactionsData: Transaction[] = [
-  {
-    id: 'txn_123abc',
-    date: '2023-10-28',
-    passenger: 'Alice Martin',
-    driver: 'Jean Dupont',
-    amount: 25.5,
-    commission: 5.1,
-    driver_payout: 20.4,
-    status: 'completed',
-  },
-];
+const initialTransactionsData: Transaction[] = [];
 // -------------------------------------------------------------
 
 // Interfaces et Types
@@ -62,19 +51,19 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, change })
         <Icon className="text-primary" size={22} />
       </div>
       <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
-      {change && <p className="text-xs text-green-600 flex items-center mt-2"><ArrowUpRight size={14}/> {change}</p>}
+      {change && <p className="text-xs text-green-600 flex items-center mt-2"><ArrowUpRight size={14} /> {change}</p>}
     </div>
   );
 };
 
 // Composant Badge de Statut pour les transactions
 const TransactionStatusBadge = ({ status }: { status: TransactionStatus }) => {
-    const config = {
-        completed: 'bg-green-100 text-green-800',
-        refunded: 'bg-yellow-100 text-yellow-800',
-        pending: 'bg-blue-100 text-blue-800',
-    };
-    return <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${config[status]}`}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>;
+  const config = {
+    completed: 'bg-green-100 text-green-800',
+    refunded: 'bg-yellow-100 text-yellow-800',
+    pending: 'bg-blue-100 text-blue-800',
+  };
+  return <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${config[status]}`}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>;
 };
 
 export default function FinancePage() {
@@ -171,8 +160,8 @@ export default function FinancePage() {
             passenger: item.type === 'ride_payment' ? 'Course passager' : 'Prime chauffeur',
             driver: item.type === 'ride_payment' ? 'Course chauffeur' : 'Prime chauffeur',
             amount: item.amount,
-            commission: 0,
-            driver_payout: 0,
+            commission: (item as any).commission || 0,
+            driver_payout: (item as any).payout || 0,
             status,
           };
         });
@@ -234,17 +223,17 @@ export default function FinancePage() {
           <h2 className="text-lg font-semibold text-gray-900">Historique des Transactions</h2>
           <div className="flex items-center gap-2 w-full md:w-auto">
             <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                <select
-                    value={dateRange}
-                    onChange={(e) => setDateRange(e.target.value)}
-                    className="w-full md:w-auto pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                    <option value="today">Aujourd'hui</option>
-                    <option value="last_7_days">7 derniers jours</option>
-                    <option value="this_month">Ce mois-ci</option>
-                    <option value="last_month">Mois dernier</option>
-                </select>
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <select
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+                className="w-full md:w-auto pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="today">Aujourd'hui</option>
+                <option value="last_7_days">7 derniers jours</option>
+                <option value="this_month">Ce mois-ci</option>
+                <option value="last_month">Mois dernier</option>
+              </select>
             </div>
             <button className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors">
               <Download size={16} />
