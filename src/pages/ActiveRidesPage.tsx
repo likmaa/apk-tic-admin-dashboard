@@ -101,11 +101,11 @@ export default function ActiveRidesPage() {
     };
 
     const statusMap = {
-        requested: { label: 'En attente', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-        accepted: { label: 'Acceptée', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-        pickup: { label: 'Récupération', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
-        arrived: { label: 'Arrivé', color: 'bg-cyan-100 text-cyan-800 border-cyan-200' },
-        ongoing: { label: 'En cours', color: 'bg-green-100 text-green-800 border-green-200' },
+        requested: { label: '🔍 En recherche', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+        accepted: { label: '🚗 Vers passager', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+        arrived: { label: '📍 Arrivé au pickup', color: 'bg-cyan-100 text-cyan-800 border-cyan-200' },
+        pickup: { label: '👋 Récupération', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
+        ongoing: { label: '🚀 Vers destination', color: 'bg-green-100 text-green-800 border-green-200' },
     };
 
     return (
