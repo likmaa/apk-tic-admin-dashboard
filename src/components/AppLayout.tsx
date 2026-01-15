@@ -44,6 +44,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { to: '/drivers/pending', label: 'Chauffeurs en attente', icon: <UserCheck size={18} /> },
     { to: '/drivers/online', label: 'Statut chauffeurs', icon: <UserCheck size={18} /> },
     { to: '/drivers/stats', label: 'Statistiques chauffeurs', icon: <UserCheck size={18} /> },
+    { to: '/drivers/debts', label: 'Dettes chauffeurs', icon: <DollarSign size={18} /> },
     { to: '/fleet', label: 'Flotte (chauffeurs)', icon: <Car size={18} /> },
     { to: '/passengers', label: 'Passagers', icon: <Users size={18} /> },
     { to: '/users', label: 'Utilisateurs', icon: <Users size={18} /> },
